@@ -46,9 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomGenerator: {fileID: 0}
   player: {fileID: 0}
-  roomViewDistance: 5
+  roomViewDistance: 20
   roomSize: 10
   playerStartPosition: {x: 5, y: 2, z: 5}
+  arrayWorldPosition: {x: 0, y: 0, z: 0}
   isGeneratingRooms: 0
   hasPlayerMoved: 0
-  arrayWorldPosition: {x: 0, y: 0, z: 0}

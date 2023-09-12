@@ -18,7 +18,7 @@ public class R_RoomGenerator : S_Singleton<R_RoomGenerator>
             Debug.Log("No world socket for rooms");
             return;
         }
-        StartCoroutine(nameof(SpawnRoom), this);
+        //StartCoroutine(nameof(SpawnRoom), this);
     }
 
     IEnumerator SpawnRoom()
@@ -50,5 +50,21 @@ public class R_RoomGenerator : S_Singleton<R_RoomGenerator>
         }
 
         yield return frame;
+    }
+
+    public R_Room GenerateRoom(Vector3Int vector3Int)
+    {
+        R_Room _room = Instantiate(roomPrefab, vector3Int, Quaternion.identity, worldSocket);
+
+        if (Random.Range(0, 101) < roomWallDestroyChance)
+            _room.wallNorth.SetActive(false);
+        if (Random.Range(0, 101) < roomWallDestroyChance)
+            _room.wallSouth.SetActive(false);
+        if (Random.Range(0, 101) < roomWallDestroyChance)
+            _room.wallEast.SetActive(false);
+        if (Random.Range(0, 101) < roomWallDestroyChance)
+            _room.wallWest.SetActive(false);
+
+        return _room;
     }
 }
