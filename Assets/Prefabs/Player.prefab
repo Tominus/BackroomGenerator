@@ -51,8 +51,8 @@ MonoBehaviour:
   renderCamera: {fileID: 6946169883364611967}
   cameraSocket: {fileID: 5815142775310438846}
   characterController: {fileID: 5989510438679372659}
-  moveSpeed: 0.1
-  rotateSpeed: 1
+  moveSpeed: 15
+  rotateSpeed: 1.5
   minRotationX: 85
   maxRotationX: 275
 --- !u!33 &1030896955532009845

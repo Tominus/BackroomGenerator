@@ -81,35 +81,64 @@ public class R_RoomManager : S_Singleton<R_RoomManager>
 
     void CheckPlayerMovement(Vector3Int _playerRoomPosition)
     {
-        if (_playerRoomPosition.x != arrayWorldPosition.x + roomViewDistance || 
-            _playerRoomPosition.z != arrayWorldPosition.z + roomViewDistance)
+        Vector3Int _arrayMiddlePosition = new Vector3Int(arrayWorldPosition.x + roomViewDistance, 0, arrayWorldPosition.z + roomViewDistance);
+
+        if (_playerRoomPosition.x != _arrayMiddlePosition.x || 
+            _playerRoomPosition.z != _arrayMiddlePosition.z)
         {
             //calculate offset
 
-            Vector3Int _moveOffset = new Vector3Int(_playerRoomPosition.x - (arrayWorldPosition.x + roomViewDistance),
+            Vector3Int _moveOffset = new Vector3Int(_playerRoomPosition.x - _arrayMiddlePosition.x,
                                                     0,
-                                                    _playerRoomPosition.z - (arrayWorldPosition.z + roomViewDistance));
+                                                    _playerRoomPosition.z - _arrayMiddlePosition.z);
+
 
             //delete oob rooms
 
-            /*int _startDeleteX = 0;
-            int _endDeleteX = 0;
+            int _startDeleteX = _moveOffset.x;
+            int _startDeleteZ = _moveOffset.z;
+            int _endDeleteX = totalRoomViewDistance + _startDeleteX - 1;
+            int _endDeleteZ = totalRoomViewDistance + _startDeleteZ - 1;
 
-            int _startDeleteZ = 0;
-            int _endDeleteZ = 0;
-
-            for (int x = 0; x < length; ++x)
+            for (int x = 0; x < totalRoomViewDistance; ++x)
             {
+                R_Room[] _rooms = allRooms[x];
 
-            }*/
-
+                for (int z = 0; z < totalRoomViewDistance; ++z)
+                {
+                    if (x < _startDeleteX || x > _endDeleteX ||
+                        z < _startDeleteZ || z > _endDeleteZ)
+                    {
+                        R_Room _room = _rooms[z];
+                        if (_room)
+                        {
+                            Destroy(_room.gameObject);
+                            _rooms[z] = null;
+                        }
+                    }
+                }
+            }
 
 
             //move others room
 
+            bool _isXMin = _startDeleteX > -1;
+            int _toAddX = _isXMin ? 1 : -1;
+            int _xStartOffset = _isXMin ? _startDeleteX : _endDeleteX;
 
+            bool _isZMin = _startDeleteZ > -1;
+            int _toAddZ = _isZMin ? 1 : -1;
+            int _zStartOffset = _isZMin ? _startDeleteZ : _endDeleteZ;
 
-
+            for (int x = _xStartOffset; x < totalRoomViewDistance && x > -1; x += _toAddX)
+            {
+                for (int z = _zStartOffset; z < totalRoomViewDistance && z > -1; z += _toAddZ)
+                {
+                    R_Room _room = allRooms[x][z];
+                    allRooms[x - _startDeleteX][z - _startDeleteZ] = _room;
+                    allRooms[x][z] = null;
+                }
+            }
 
 
             //recenter player

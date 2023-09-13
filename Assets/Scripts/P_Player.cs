@@ -6,8 +6,8 @@ public class P_Player : S_Singleton<P_Player>
     [SerializeField] Camera renderCamera;
     [SerializeField] Transform cameraSocket;
     [SerializeField] CharacterController characterController;
-    [SerializeField, Range(0.1f, 10f)] float moveSpeed = 1f;
-    [SerializeField, Range(0.1f, 10f)] float rotateSpeed = 1f;
+    [SerializeField, Range(0.1f, 50f)] float moveSpeed = 1f;
+    [SerializeField, Range(0.1f, 100f)] float rotateSpeed = 1f;
     [SerializeField, Range(0f, 90f)] float minRotationX = 85f;
     [SerializeField, Range(270, 360f)] float maxRotationX = 275f;
 
@@ -34,21 +34,17 @@ public class P_Player : S_Singleton<P_Player>
 
     private void Update()
     {
-        MoveHorizontal();
-        MoveVertical();
+        MovePlayer();
         RotateHorizontal();
         RotateVertical();
     }
 
-    void MoveHorizontal()
+    void MovePlayer()
     {
-        float _moveOffset = Input.GetAxis("Horizontal") * moveSpeed;
-        characterController.Move(transform.right * _moveOffset);
-    }
-    void MoveVertical()
-    {
-        float _moveOffset = Input.GetAxis("Vertical") * moveSpeed;
-        characterController.Move(transform.forward * _moveOffset);
+        Vector3 _normalizedMovement = (transform.right * Input.GetAxis("Horizontal") +
+                                       transform.forward * Input.GetAxis("Vertical"))
+                                       .normalized;
+        characterController.Move(_normalizedMovement * moveSpeed * Time.deltaTime);
     }
 
     void RotateHorizontal()
