@@ -8,7 +8,8 @@ public class R_RoomManager : S_Singleton<R_RoomManager>
     [SerializeField] R_RoomGenerator roomGenerator;
     [SerializeField] P_Player player;
     Transform playerTransform = null;
-    [SerializeField, Range(1, 100)] int roomViewDistance = 5;
+    [SerializeField, Range(0, 100)] int roomViewDistance = 5;
+    [SerializeField, Range(1, 50)] int roomSimultaneousGeneration = 5;
     [SerializeField, Range(1, 100)] int roomSize = 10;
     [SerializeField] Vector3Int playerStartPosition = Vector3Int.zero;
 
@@ -78,7 +79,6 @@ public class R_RoomManager : S_Singleton<R_RoomManager>
         CheckPlayerMovement(_playerRoomPosition);
         GenerateRooms(_playerRoomPosition);
     }
-
     void CheckPlayerMovement(Vector3Int _playerRoomPosition)
     {
         Vector3Int _arrayMiddlePosition = new Vector3Int(arrayWorldPosition.x + roomViewDistance, 0, arrayWorldPosition.z + roomViewDistance);
@@ -185,8 +185,11 @@ public class R_RoomManager : S_Singleton<R_RoomManager>
     IEnumerator RequestRoomGeneration(List<Vector3Int> _roomsPositionToGenerate)
     {
         // Ask RoomGenerator to generate rooms
-        int _count = _roomsPositionToGenerate.Count;
-        for (int i = 0; i < _count; ++i)
+
+        int _simultaneous = 0;
+        int _roomCount = _roomsPositionToGenerate.Count;
+
+        for (int i = 0; i < _roomCount; ++i)
         {
             Vector3Int _roomPosition = _roomsPositionToGenerate[i];
             R_Room _room = roomGenerator.GenerateRoom(new Vector3Int((_roomPosition.x + arrayWorldPosition.x) * roomSize,
@@ -200,7 +203,12 @@ public class R_RoomManager : S_Singleton<R_RoomManager>
 
             allRooms[_roomPosition.x][_roomPosition.z] = _room;
 
-            yield return waitForEndOfFrame;
+            ++_simultaneous;
+            if (_simultaneous >= roomSimultaneousGeneration)
+            {
+                _simultaneous = 0;
+                yield return waitForEndOfFrame;
+            }
         }
 
         isGeneratingRooms = false;

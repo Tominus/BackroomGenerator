@@ -47,6 +47,6 @@ MonoBehaviour:
   roomPrefab: {fileID: 4719608312137093952, guid: 1a9df64ca489f7e4388a816434b8eb9f,
     type: 3}
   worldSocket: {fileID: 0}
-  roomCount: 20
-  roomSize: 10
-  roomWallDestroyChance: 75
+  roomWallDestroyChance: 50
+  genSeed: 69
+  genFrequency: 0.99
