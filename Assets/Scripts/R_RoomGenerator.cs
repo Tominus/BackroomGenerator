@@ -6,8 +6,8 @@ public class R_RoomGenerator : S_Singleton<R_RoomGenerator>
     [SerializeField] R_Room roomPrefab;
     [SerializeField] Transform worldSocket;
     [SerializeField, Range(1, 100)] int roomWallDestroyChance = 75;
-    [SerializeField] int genSeed = 0;
-    [SerializeField, Range(0.01f, 9.99f)] float genFrequency = 0.99f;
+
+    P_PerlinNoise perlinNoise = null;
     
     void Start()
     {
@@ -16,6 +16,7 @@ public class R_RoomGenerator : S_Singleton<R_RoomGenerator>
             Debug.Log("No world socket for rooms");
             return;
         }
+        perlinNoise = P_PerlinNoise.Instance;
     }
 
     public R_Room GenerateRoom(Vector3Int vector3Int)
@@ -34,20 +35,15 @@ public class R_RoomGenerator : S_Singleton<R_RoomGenerator>
 
         float _roomWallDestroyChance = roomWallDestroyChance / 100f;
 
-        if (PerlinNoise(_wallNorthPos.x, _wallNorthPos.z) < _roomWallDestroyChance)
+        if (perlinNoise.GetDefaultNoise(_wallNorthPos.x, _wallNorthPos.z) < _roomWallDestroyChance)
             _wallNorth.SetActive(false);
-        if (PerlinNoise(_wallSouthPos.x, _wallSouthPos.z) < _roomWallDestroyChance)
+        if (perlinNoise.GetDefaultNoise(_wallSouthPos.x, _wallSouthPos.z) < _roomWallDestroyChance)
             _wallSouth.SetActive(false);
-        if (PerlinNoise(_wallEastPos.x, _wallEastPos.z) < _roomWallDestroyChance)
+        if (perlinNoise.GetDefaultNoise(_wallEastPos.x, _wallEastPos.z) < _roomWallDestroyChance)
             _wallEast.SetActive(false);
-        if (PerlinNoise(_wallWestPos.x, _wallWestPos.z) < _roomWallDestroyChance)
+        if (perlinNoise.GetDefaultNoise(_wallWestPos.x, _wallWestPos.z) < _roomWallDestroyChance)
             _wallWest.SetActive(false);
 
         return _room;
-    }
-
-    public float PerlinNoise(float _x, float _z)
-    {
-        return Mathf.PerlinNoise(_x * genFrequency + genSeed, _z * genFrequency + genSeed);
     }
 }

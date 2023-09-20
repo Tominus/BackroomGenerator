@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4954038686922857428
+--- !u!1 &1625133303617219351
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 255302040609882659}
-  - component: {fileID: 3910589076470006764}
+  - component: {fileID: 1323457475920534211}
+  - component: {fileID: 897116527401429616}
   m_Layer: 0
-  m_Name: RoomGenerator
+  m_Name: PerlinNoise
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &255302040609882659
+--- !u!4 &1323457475920534211
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4954038686922857428}
+  m_GameObject: {fileID: 1625133303617219351}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,19 +32,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3910589076470006764
+--- !u!114 &897116527401429616
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4954038686922857428}
+  m_GameObject: {fileID: 1625133303617219351}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d98b3ca194bad7a4fae2511f7d396ac2, type: 3}
+  m_Script: {fileID: 11500000, guid: 3566aca368205d241a6ab98941878061, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomPrefab: {fileID: 4719608312137093952, guid: 1a9df64ca489f7e4388a816434b8eb9f,
-    type: 3}
-  worldSocket: {fileID: 0}
-  roomWallDestroyChance: 50
+  seed: 1
+  perlinNoiseDefaultZ: 0.34567
+  defaultSettings:
+    frequency: 0.0390625
+    octaves: 6
+    resolution: 1
+  biomeSettings:
+    frequency: 0.0390625
+    octaves: 6
+    resolution: 256
