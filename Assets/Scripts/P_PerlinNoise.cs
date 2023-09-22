@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 [Serializable]
@@ -9,21 +11,32 @@ public struct PerlinNoiseSettings
     [SerializeField] public double frequency;
     [SerializeField] public double octaves;
     [SerializeField] public double resolution;
+    [SerializeField] public string name;
+    [SerializeField] public RawImage image;
 
-    public PerlinNoiseSettings(double _frequency, double _octaves, double _resolution)
+    public PerlinNoiseSettings(double _frequency, double _octaves, double _resolution, string _name, RawImage _image)
     {
         frequency = _frequency;
         octaves = _octaves;
         resolution = _resolution;
+        name = _name;
+        image = _image;
     }
 }
 
 public class P_PerlinNoise : S_Singleton<P_PerlinNoise>
 {
+    //TODO DELETE
+    public Action OnRegenerateWorld = null;
+
     [SerializeField] private int seed = 0;
     [SerializeField] private double perlinNoiseDefaultZ = 3.1415;
     [SerializeField] private PerlinNoiseSettings defaultSettings;
     [SerializeField] private PerlinNoiseSettings biomeSettings;
+
+    [SerializeField] private bool generateImage = true;
+    [SerializeField] private int imageSize = 256;
+    [SerializeField] private string imagePath = "Texture";
 
     private int[] permutation = null;
 
@@ -32,7 +45,7 @@ public class P_PerlinNoise : S_Singleton<P_PerlinNoise>
         base.Awake();
         InitSeed();
         Shuffle();
-        GenerateImage();
+        GenerateAllPerlinImage();
     }
     private void InitSeed()
     {
@@ -54,10 +67,66 @@ public class P_PerlinNoise : S_Singleton<P_PerlinNoise>
             --_count;
         }
     }
-    private void GenerateImage()
+    private void GenerateAllPerlinImage()
     {
-
+        if (!generateImage) return;
+        GenerateImage(GetDefaultNoise, defaultSettings.name, defaultSettings.image);
+        GenerateImage(GetBiomeNoise, biomeSettings.name, biomeSettings.image);
     }
+    private void GenerateImage(Func<double, double, double> _callBack, string _imageName, RawImage _image)
+    {
+        Texture2D texture = new Texture2D(imageSize, imageSize);
+
+        Color[] _colors = new Color[imageSize * imageSize];
+
+        for (int i = 0; i < imageSize; ++i)
+        {
+            for (int j = 0; j < imageSize; ++j)
+            {
+                float _noiseValue = (float)_callBack(i, j);
+                _colors[j * imageSize + i] = new Color(_noiseValue, _noiseValue, _noiseValue);
+            }
+        }
+
+        if (_image)
+            _image.texture = texture;
+
+        texture.SetPixels(_colors);
+        texture.Apply();
+
+        byte[] _textureByte = texture.EncodeToPNG();
+        string _applicationPath = Application.dataPath + "/" + imagePath + "/";
+        if (!Directory.Exists(_applicationPath))
+        {
+            Directory.CreateDirectory(_applicationPath);
+        }
+        File.WriteAllBytes(_applicationPath + _imageName + ".png", _textureByte);
+    }
+
+
+
+    /// <summary>
+    /// TODO DELETE
+    /// </summary>
+    /// <param name="_x"></param>
+    /// <param name="_y"></param>
+    /// <returns></returns>
+    /// 
+
+    private void Update()
+    {
+        if (Input.GetButtonDown("Jump"))
+        {
+            GenerateAllPerlinImage();
+            OnRegenerateWorld?.Invoke();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        OnRegenerateWorld = null;
+    }
+
 
     public double GetDefaultNoise(double _x, double _y)
     {

@@ -10,6 +10,8 @@ public class P_Player : S_Singleton<P_Player>
     [SerializeField, Range(0.1f, 100f)] float rotateSpeed = 1f;
     [SerializeField, Range(0f, 90f)] float minRotationX = 85f;
     [SerializeField, Range(270, 360f)] float maxRotationX = 275f;
+    [SerializeField] CursorLockMode cursorLockMode = CursorLockMode.Locked;
+    [SerializeField] bool cursorVisibility = false;
 
     public Camera Camera => renderCamera;
 
@@ -27,8 +29,8 @@ public class P_Player : S_Singleton<P_Player>
             return;
         }
         renderCamera = cameraSocket.GetComponent<Camera>();
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = cursorVisibility;
+        Cursor.lockState = cursorLockMode;
     }
 
 

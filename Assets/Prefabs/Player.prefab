@@ -55,6 +55,8 @@ MonoBehaviour:
   rotateSpeed: 1.5
   minRotationX: 85
   maxRotationX: 275
+  cursorLockMode: 1
+  cursorVisibility: 0
 --- !u!33 &1030896955532009845
 MeshFilter:
   m_ObjectHideFlags: 0

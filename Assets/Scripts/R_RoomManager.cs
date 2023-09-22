@@ -9,7 +9,7 @@ public class R_RoomManager : S_Singleton<R_RoomManager>
     [SerializeField] P_Player player;
     Transform playerTransform = null;
     [SerializeField, Range(0, 100)] int roomViewDistance = 5;
-    [SerializeField, Range(1, 50)] int roomSimultaneousGeneration = 5;
+    [SerializeField, Range(1, 50)]  int roomSimultaneousGeneration = 5;
     [SerializeField, Range(1, 100)] int roomSize = 10;
     [SerializeField] Vector3Int playerStartPosition = Vector3Int.zero;
 
@@ -22,6 +22,8 @@ public class R_RoomManager : S_Singleton<R_RoomManager>
 
     WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
 
+    P_PerlinNoise perlinNoise = null;
+
     public Vector3Int CalculatePlayerPosition()
     {
         Vector3 _tmpPosition = playerTransform.position / roomSize;
@@ -32,6 +34,8 @@ public class R_RoomManager : S_Singleton<R_RoomManager>
     {
         roomGenerator = R_RoomGenerator.Instance;
         player = P_Player.Instance;
+        perlinNoise = P_PerlinNoise.Instance;
+        perlinNoise.OnRegenerateWorld += RegenerateAllRoom;
 
         InitPlayerPosition();
         InitRoomArray();
@@ -212,5 +216,27 @@ public class R_RoomManager : S_Singleton<R_RoomManager>
         }
 
         isGeneratingRooms = false;
+    }
+
+
+    void RegenerateAllRoom()
+    {
+        StopAllCoroutines();
+
+        for (int x = 0; x < totalRoomViewDistance; ++x)
+        {
+            for (int y = 0; y < totalRoomViewDistance; ++y)
+            {
+                if (allRooms[x][y])
+                {
+                    Destroy(allRooms[x][y].gameObject);
+                }
+                allRooms[x][y] = null;
+            }
+        }
+
+        isGeneratingRooms = false;
+        hasPlayerMoved = true;
+        GenerateRooms(CalculatePlayerPosition());
     }
 }

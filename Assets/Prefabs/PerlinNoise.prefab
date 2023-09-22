@@ -47,10 +47,17 @@ MonoBehaviour:
   seed: 1
   perlinNoiseDefaultZ: 0.34567
   defaultSettings:
-    frequency: 0.0390625
+    frequency: 0.06
+    octaves: 2
+    resolution: 1
+    name: Default
+    image: {fileID: 0}
+  biomeSettings:
+    frequency: 0.01
     octaves: 6
     resolution: 1
-  biomeSettings:
-    frequency: 0.0390625
-    octaves: 6
-    resolution: 256
+    name: Biome
+    image: {fileID: 0}
+  generateImage: 1
+  imageSize: 512
+  imagePath: Textures
